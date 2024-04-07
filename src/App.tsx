@@ -1,3 +1,9 @@
+import { Header } from "./components/header";
+
 export function App() {
-  return <h1 className="bg-red-500">Olá mundo</h1>
+  return (
+    <div className="max-w-[1448px] mx-auto py-3 flex flex-col gap-5">
+      <Header />
+    </div>
+  )
 }
