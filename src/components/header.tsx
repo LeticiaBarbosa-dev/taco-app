@@ -2,7 +2,7 @@ import logoTacoApi from "../assets/taco-api-logo.svg";
 import { NavLink } from "./nav-link";
 export function Header() {
   return (
-    <div className="pl-4">
+    <div>
       <div className="flex items-center py-3">
         <img className="" src={logoTacoApi} alt="" />
       </div>
