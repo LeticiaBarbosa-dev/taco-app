@@ -13,17 +13,19 @@ export function FoodList() {
   const [page, setPage] = useState(() => {
     const url = new URL(window.location.toString());
 
-    if(url.searchParams.has("page")) {
-        return Number(url.searchParams.get("page"));
+    if (url.searchParams.has("page")) {
+      return Number(url.searchParams.get("page"));
     }
-  })
+  });
 
   function setCurrentSearch(search: string) {
     const url = new URL(window.location.toString());
 
     url.searchParams.set("search", search);
 
-    setCurrentSearch(search);
+    window.history.pushState({}, "", url);
+
+    setSearch(search);
   }
 
   function setCurrentPage(page: number) {
@@ -47,13 +49,12 @@ export function FoodList() {
         <div className="px-3 w-72 py-1.5 border border-white/10 rounded-lg flex items-center gap-3">
           <Search className="size-4 text-custom-green-default" />
           <input
-          onChange={onSearchInputChanged}
-          value={search}
+            onChange={onSearchInputChanged}
+            value={search}
             className="bg-transparent flex-1 outline-none border-0 p-0 text-sm focus:ring-0"
             placeholder="Buscar alimento..."
           />
         </div>
-        {search}
       </div>
     </div>
   );
