@@ -1,5 +1,10 @@
-import { Search } from "lucide-react";
+import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, Search } from "lucide-react";
 import { ChangeEvent, useState } from "react";
+import { Table } from "./table/table";
+import { TableHeader } from "./table/table-header";
+import { TableRow } from "./table/table-row";
+import { TableCell } from "./table/table-cell";
+import { IconButton } from "./icon-button";
 
 export function FoodList() {
   const [search, setSearch] = useState(() => {
@@ -56,6 +61,83 @@ export function FoodList() {
           />
         </div>
       </div>
+
+      <Table>
+        <thead>
+          <tr className="border-b border-white/10">
+            <TableHeader>Número</TableHeader>
+            <TableHeader>Descrição dos alimentos</TableHeader>
+            <TableHeader>Umidade (%)</TableHeader>
+            <TableHeader>Kcal</TableHeader>
+            <TableHeader>Kj</TableHeader>
+            <TableHeader>Proteína (g)</TableHeader>
+            <TableHeader>Lipídeos (g)</TableHeader>
+            <TableHeader>Colesterol (mg)</TableHeader>
+            <TableHeader>Carboidrato (g)</TableHeader>
+            <TableHeader>Fibra alimentar (g)</TableHeader>
+            <TableHeader>Cinzas (g)</TableHeader>
+            <TableHeader>Cálcio (mg)</TableHeader>
+            <TableHeader>Magnésio (mg)</TableHeader>
+          </tr>
+        </thead>
+
+        <tbody>
+          <TableRow>
+            <TableCell>1</TableCell>
+            <TableCell>Arroz, integral, cozido</TableCell>
+            <TableCell>70,1</TableCell>
+            <TableCell>124</TableCell>
+            <TableCell>517</TableCell>
+            <TableCell>2,6</TableCell>
+            <TableCell>1</TableCell>
+            <TableCell>NA</TableCell>
+            <TableCell>25,8</TableCell>
+            <TableCell>2,7</TableCell>
+            <TableCell>0,5</TableCell>
+            <TableCell>5</TableCell>
+            <TableCell>59</TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell>2</TableCell>
+            <TableCell>Arroz, integral, cru</TableCell>
+            <TableCell>12,2</TableCell>
+            <TableCell>360</TableCell>
+            <TableCell>1505</TableCell>
+            <TableCell>1,9</TableCell>
+            <TableCell>1,9</TableCell>
+            <TableCell>NA</TableCell>
+            <TableCell>77,5</TableCell>
+            <TableCell>4,8</TableCell>
+            <TableCell>1,2</TableCell>
+            <TableCell>8</TableCell>
+            <TableCell>110</TableCell>
+          </TableRow>
+        </tbody>
+        <tfoot>
+          <tr>
+            <TableCell colSpan={5}>Mostrando 10 de 200 alimentos</TableCell>
+            <TableCell className="text-right" colSpan={5}>
+              <div className="inline-flex items-center gap-8">
+                <span>Página 1 de 11</span>
+                <div className="flex gap-1.5">
+                  <IconButton>
+                    <ChevronsLeft className="size-4" />
+                  </IconButton>
+                  <IconButton>
+                    <ChevronLeft className="size-4" />
+                  </IconButton>
+                  <IconButton>
+                    <ChevronRight className="size-4" />
+                  </IconButton>
+                  <IconButton>
+                    <ChevronsRight className="size-4" />
+                  </IconButton>
+                </div>
+              </div>
+            </TableCell>
+          </tr>
+        </tfoot>
+      </Table>
     </div>
   );
 }

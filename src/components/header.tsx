@@ -7,7 +7,7 @@ export function Header() {
         <img className="" src={logoTacoApi} alt="" />
       </div>
       <div>
-        <nav className="flex items-center gap-3">
+        <nav className="flex items-center gap-3.5">
           <NavLink href="/cereais-derivados">Cereais e derivados</NavLink>
           <NavLink href="/verduras-hortalicas-derivados">
             Verduras, hortaliças e derivados
