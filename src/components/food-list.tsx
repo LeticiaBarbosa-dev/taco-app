@@ -1,10 +1,32 @@
-import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, Search } from "lucide-react";
-import { ChangeEvent, useState } from "react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  ChevronsLeft,
+  ChevronsRight,
+  Search,
+} from "lucide-react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { Table } from "./table/table";
 import { TableHeader } from "./table/table-header";
-import { TableRow } from "./table/table-row";
 import { TableCell } from "./table/table-cell";
 import { IconButton } from "./icon-button";
+import { TableRow } from "./table/table-row";
+
+interface Food {
+  id: string;
+  description: string;
+  humidity_percents: string;
+  energy_kcal: string;
+  energy_kj: string;
+  protein_g: string;
+  lipid_g: string;
+  cholesterol_mg: string;
+  carbohydrate_g: string;
+  fiber_g: string;
+  ashes_g: string;
+  calcium_mg: string;
+  magnesium_mg: string;
+}
 
 export function FoodList() {
   const [search, setSearch] = useState(() => {
@@ -21,6 +43,21 @@ export function FoodList() {
     if (url.searchParams.has("page")) {
       return Number(url.searchParams.get("page"));
     }
+    return 1;
+  });
+
+  const [foods, setFoods] = useState<Food[]>([]);
+
+  useEffect(() => {
+    fetch("./TACO.json", {
+      headers: {
+        Accept: "application/json",
+      },
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        setFoods(res);
+      });
   });
 
   function setCurrentSearch(search: string) {
@@ -82,41 +119,30 @@ export function FoodList() {
         </thead>
 
         <tbody>
-          <TableRow>
-            <TableCell>1</TableCell>
-            <TableCell>Arroz, integral, cozido</TableCell>
-            <TableCell>70,1</TableCell>
-            <TableCell>124</TableCell>
-            <TableCell>517</TableCell>
-            <TableCell>2,6</TableCell>
-            <TableCell>1</TableCell>
-            <TableCell>NA</TableCell>
-            <TableCell>25,8</TableCell>
-            <TableCell>2,7</TableCell>
-            <TableCell>0,5</TableCell>
-            <TableCell>5</TableCell>
-            <TableCell>59</TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell>2</TableCell>
-            <TableCell>Arroz, integral, cru</TableCell>
-            <TableCell>12,2</TableCell>
-            <TableCell>360</TableCell>
-            <TableCell>1505</TableCell>
-            <TableCell>1,9</TableCell>
-            <TableCell>1,9</TableCell>
-            <TableCell>NA</TableCell>
-            <TableCell>77,5</TableCell>
-            <TableCell>4,8</TableCell>
-            <TableCell>1,2</TableCell>
-            <TableCell>8</TableCell>
-            <TableCell>110</TableCell>
-          </TableRow>
+          {foods.map((food) => {
+            return (
+              <TableRow key={food.id}>
+                <TableCell>{food.id}</TableCell>
+                <TableCell>{food.description}</TableCell>
+                <TableCell>{food.humidity_percents}</TableCell>
+                <TableCell>{food.energy_kcal}</TableCell>
+                <TableCell>{food.energy_kj}</TableCell>
+                <TableCell>{food.protein_g}</TableCell>
+                <TableCell>{food.lipid_g}</TableCell>
+                <TableCell>{food.cholesterol_mg}</TableCell>
+                <TableCell>{food.carbohydrate_g}</TableCell>
+                <TableCell>{food.fiber_g}</TableCell>
+                <TableCell>{food.ashes_g}</TableCell>
+                <TableCell>{food.calcium_mg}</TableCell>
+                <TableCell>{food.magnesium_mg}</TableCell>
+              </TableRow>
+            );
+          })}
         </tbody>
         <tfoot>
           <tr>
-            <TableCell colSpan={5}>Mostrando 10 de 200 alimentos</TableCell>
-            <TableCell className="text-right" colSpan={5}>
+            <TableCell colSpan={3}>Mostrando 10 de 200 alimentos</TableCell>
+            <TableCell className="text-right" colSpan={4}>
               <div className="inline-flex items-center gap-8">
                 <span>Página 1 de 11</span>
                 <div className="flex gap-1.5">
