@@ -15,17 +15,11 @@ import { TableRow } from "./table/table-row";
 interface Food {
   id: string;
   description: string;
-  humidity_percents: string;
   energy_kcal: string;
-  energy_kj: string;
   protein_g: string;
   lipid_g: string;
-  cholesterol_mg: string;
   carbohydrate_g: string;
   fiber_g: string;
-  ashes_g: string;
-  calcium_mg: string;
-  magnesium_mg: string;
 }
 
 export function FoodList() {
@@ -46,19 +40,24 @@ export function FoodList() {
     return 1;
   });
 
+  const [total, setTotal] = useState(0);
   const [foods, setFoods] = useState<Food[]>([]);
 
+  const totalPages = Math.ceil(total / 10);
+
   useEffect(() => {
-    fetch("./TACO.json", {
+
+    fetch("./TACO-example.json", {
       headers: {
         Accept: "application/json",
       },
     })
-      .then((res) => res.json())
-      .then((res) => {
-        setFoods(res);
+      .then((response) => response.json())
+      .then((data) => {
+        setFoods(data);
+        setTotal(data.total);
       });
-  });
+  }, [page, search]);
 
   function setCurrentSearch(search: string) {
     const url = new URL(window.location.toString());
@@ -84,6 +83,23 @@ export function FoodList() {
     setCurrentSearch(event.target.value);
     setCurrentPage(1);
   }
+
+  function goToFirstPage() {
+    setCurrentPage(1);
+  }
+
+  function goToLastPage() {
+    setCurrentPage(totalPages);
+  }
+
+  function goToPreviousPage() {
+    setCurrentPage(page - 1);
+  }
+
+  function goToNextPage() {
+    setCurrentPage(page + 1);
+  }
+
   return (
     <div className=" flex flex-col gap-4">
       <div className="flex gap-3 items-center">
@@ -103,18 +119,12 @@ export function FoodList() {
         <thead>
           <tr className="border-b border-white/10">
             <TableHeader>Número</TableHeader>
-            <TableHeader>Descrição dos alimentos</TableHeader>
-            <TableHeader>Umidade (%)</TableHeader>
+            <TableHeader className="py-3 px-2 text-sm font-semibold text-start">Descrição dos alimentos</TableHeader>
             <TableHeader>Kcal</TableHeader>
-            <TableHeader>Kj</TableHeader>
             <TableHeader>Proteína (g)</TableHeader>
             <TableHeader>Lipídeos (g)</TableHeader>
-            <TableHeader>Colesterol (mg)</TableHeader>
             <TableHeader>Carboidrato (g)</TableHeader>
             <TableHeader>Fibra alimentar (g)</TableHeader>
-            <TableHeader>Cinzas (g)</TableHeader>
-            <TableHeader>Cálcio (mg)</TableHeader>
-            <TableHeader>Magnésio (mg)</TableHeader>
           </tr>
         </thead>
 
@@ -123,39 +133,40 @@ export function FoodList() {
             return (
               <TableRow key={food.id}>
                 <TableCell>{food.id}</TableCell>
-                <TableCell>{food.description}</TableCell>
-                <TableCell>{food.humidity_percents}</TableCell>
-                <TableCell>{food.energy_kcal}</TableCell>
-                <TableCell>{food.energy_kj}</TableCell>
-                <TableCell>{food.protein_g}</TableCell>
-                <TableCell>{food.lipid_g}</TableCell>
-                <TableCell>{food.cholesterol_mg}</TableCell>
-                <TableCell>{food.carbohydrate_g}</TableCell>
-                <TableCell>{food.fiber_g}</TableCell>
-                <TableCell>{food.ashes_g}</TableCell>
-                <TableCell>{food.calcium_mg}</TableCell>
-                <TableCell>{food.magnesium_mg}</TableCell>
+                <TableCell className="text-start">{food.description}</TableCell>
+                <TableCell>{Math.ceil(Number(food.energy_kcal))}</TableCell>
+                <TableCell>{Number(food.protein_g).toFixed(1)}</TableCell>
+                <TableCell>{Number(food.lipid_g).toFixed(1)}</TableCell>
+                <TableCell>{Number(food.carbohydrate_g).toFixed(1)}</TableCell>
+                <TableCell>{Number(food.fiber_g).toFixed(1)}</TableCell>
               </TableRow>
             );
           })}
         </tbody>
         <tfoot>
           <tr>
-            <TableCell colSpan={3}>Mostrando 10 de 200 alimentos</TableCell>
+            <TableCell colSpan={3}>
+              Mostrando {foods.length} de {total} alimentos
+            </TableCell>
             <TableCell className="text-right" colSpan={4}>
               <div className="inline-flex items-center gap-8">
-                <span>Página 1 de 11</span>
+                <span>
+                  Página {page} de {totalPages}
+                </span>
                 <div className="flex gap-1.5">
-                  <IconButton>
+                  <IconButton onClick={goToFirstPage} disabled={page == 1}>
                     <ChevronsLeft className="size-4" />
                   </IconButton>
-                  <IconButton>
+                  <IconButton onClick={goToPreviousPage} disabled={page == 1}>
                     <ChevronLeft className="size-4" />
                   </IconButton>
-                  <IconButton>
+                  <IconButton
+                    onClick={goToNextPage}
+                    disabled={page == totalPages}
+                  >
                     <ChevronRight className="size-4" />
                   </IconButton>
-                  <IconButton>
+                  <IconButton onClick={goToLastPage} disabled={page == totalPages}>
                     <ChevronsRight className="size-4" />
                   </IconButton>
                 </div>
