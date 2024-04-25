@@ -145,10 +145,10 @@ export function FoodList() {
         </tbody>
         <tfoot>
           <tr>
-            <TableCell colSpan={3}>
+            <TableCell className="pl-9 text-start" colSpan={3}>
               Mostrando {foods.length} de {total} alimentos
             </TableCell>
-            <TableCell className="text-right" colSpan={4}>
+            <TableCell className="pr-16 text-right" colSpan={4}>
               <div className="inline-flex items-center gap-8">
                 <span>
                   Página {page} de {totalPages}
