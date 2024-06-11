@@ -1,12 +1,16 @@
-import { ComponentProps } from "react";
+import { ReactNode } from "react";
 
-interface NavLinkProps extends ComponentProps<"a"> {
-  children: string;
+interface NavLinkProps {
+  onClick: () => void;
+  children: ReactNode;
 }
-export function NavLink(props: NavLinkProps) {
+export function NavLink({ onClick, children }: NavLinkProps) {
   return (
-    <a {...props} className="font-medium text-base text-custom-green-disabled">
-      {props.children}
-    </a>
+    <button
+      onClick={onClick}
+      className="font-medium text-base text-custom-green-disabled"
+    >
+      {children}
+    </button>
   );
 }
