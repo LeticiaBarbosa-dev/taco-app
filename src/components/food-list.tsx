@@ -11,6 +11,8 @@ import { TableHeader } from "./table/table-header";
 import { TableCell } from "./table/table-cell";
 import { IconButton } from "./icon-button";
 import { TableRow } from "./table/table-row";
+import api from "../services/api";
+import { useParams } from "react-router-dom";
 
 interface Food {
   id: string;
@@ -20,68 +22,41 @@ interface Food {
   lipid_g: string;
   carbohydrate_g: string;
   fiber_g: string;
+  category: string;
 }
 
 export function FoodList() {
-  const [search, setSearch] = useState(() => {
-    const url = new URL(window.location.toString());
-
-    if (url.searchParams.has("search")) {
-      return url.searchParams.get("search") ?? "";
-    }
-  });
-
-  const [page, setPage] = useState(() => {
-    const url = new URL(window.location.toString());
-
-    if (url.searchParams.has("page")) {
-      return Number(url.searchParams.get("page"));
-    }
-    return 1;
-  });
-
+  const { category } = useParams<{ category: string }>();
+  const [search, setSearch] = useState("");
+  const [page, setPage] = useState(1);
   const [total, setTotal] = useState(0);
   const [foods, setFoods] = useState<Food[]>([]);
 
   const totalPages = Math.ceil(total / 10);
 
   useEffect(() => {
-
-    fetch("./TACO-example.json", {
-      headers: {
-        Accept: "application/json",
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        setFoods(data);
-        setTotal(data.total);
+    api
+      .get(`/foods`, { params: { category, page, search } })
+      .then((response) => {
+        setFoods(response.data.foods);
+        setTotal(response.data.total);
+      })
+      .catch((error) => {
+        console.error("Error fetching foods:", error);
       });
-  }, [page, search]);
+  }, [category, page, search]);
 
   function setCurrentSearch(search: string) {
-    const url = new URL(window.location.toString());
-
-    url.searchParams.set("search", search);
-
-    window.history.pushState({}, "", url);
-
     setSearch(search);
+    setPage(1);
   }
 
   function setCurrentPage(page: number) {
-    const url = new URL(window.location.toString());
-
-    url.searchParams.set("page", String(page));
-
-    window.history.pushState({}, "", url);
-
     setPage(page);
   }
 
   function onSearchInputChanged(event: ChangeEvent<HTMLInputElement>) {
     setCurrentSearch(event.target.value);
-    setCurrentPage(1);
   }
 
   function goToFirstPage() {
@@ -101,11 +76,11 @@ export function FoodList() {
   }
 
   return (
-    <div className=" flex flex-col gap-4">
+    <div className="flex flex-col gap-4">
       <div className="flex gap-3 items-center">
         <h1 className="text-2xl font-bold">Cereais e derivados</h1>
         <div className="px-3 w-72 py-1.5 border border-white/10 rounded-lg flex items-center gap-3">
-          <Search className="size-4 text-custom-green-default" />
+          <Search className="size-4 text-emerald-300" />
           <input
             onChange={onSearchInputChanged}
             value={search}
@@ -119,7 +94,9 @@ export function FoodList() {
         <thead>
           <tr className="border-b border-white/10">
             <TableHeader>Número</TableHeader>
-            <TableHeader className="py-3 px-2 text-sm font-semibold text-start">Descrição dos alimentos</TableHeader>
+            <TableHeader className="py-3 px-2 text-sm font-semibold text-start">
+              Descrição dos alimentos
+            </TableHeader>
             <TableHeader>Kcal</TableHeader>
             <TableHeader>Proteína (g)</TableHeader>
             <TableHeader>Lipídeos (g)</TableHeader>
@@ -127,14 +104,13 @@ export function FoodList() {
             <TableHeader>Fibra alimentar (g)</TableHeader>
           </tr>
         </thead>
-
         <tbody>
           {foods.map((food) => {
             return (
               <TableRow key={food.id}>
                 <TableCell>{food.id}</TableCell>
                 <TableCell className="text-start">{food.description}</TableCell>
-                <TableCell>{Math.ceil(Number(food.energy_kcal))}</TableCell>
+                <TableCell>{Number(food.energy_kcal).toFixed(2)}</TableCell>
                 <TableCell>{Number(food.protein_g).toFixed(1)}</TableCell>
                 <TableCell>{Number(food.lipid_g).toFixed(1)}</TableCell>
                 <TableCell>{Number(food.carbohydrate_g).toFixed(1)}</TableCell>
@@ -145,28 +121,31 @@ export function FoodList() {
         </tbody>
         <tfoot>
           <tr>
-            <TableCell className="pl-9 text-start" colSpan={3}>
-              Mostrando {foods.length} de {total} alimentos
+            <TableCell colSpan={3}>
+              Mostrando {foods.length} de {total} itens
             </TableCell>
-            <TableCell className="pr-16 text-right" colSpan={4}>
+            <TableCell className="text-right" colSpan={3}>
               <div className="inline-flex items-center gap-8">
                 <span>
                   Página {page} de {totalPages}
                 </span>
                 <div className="flex gap-1.5">
-                  <IconButton onClick={goToFirstPage} disabled={page == 1}>
+                  <IconButton onClick={goToFirstPage} disabled={page === 1}>
                     <ChevronsLeft className="size-4" />
                   </IconButton>
-                  <IconButton onClick={goToPreviousPage} disabled={page == 1}>
+                  <IconButton onClick={goToPreviousPage} disabled={page === 1}>
                     <ChevronLeft className="size-4" />
                   </IconButton>
                   <IconButton
                     onClick={goToNextPage}
-                    disabled={page == totalPages}
+                    disabled={page === totalPages}
                   >
                     <ChevronRight className="size-4" />
                   </IconButton>
-                  <IconButton onClick={goToLastPage} disabled={page == totalPages}>
+                  <IconButton
+                    onClick={goToLastPage}
+                    disabled={page === totalPages}
+                  >
                     <ChevronsRight className="size-4" />
                   </IconButton>
                 </div>
