@@ -1,6 +1,14 @@
 import logoTacoApi from "../assets/taco-api-logo.svg";
 import { NavLink } from "./nav-link";
+import { useNavigate } from "react-router-dom";
+
 export function Header() {
+  const navigate = useNavigate();
+
+  function handleCategoryClick(category: string) {
+    navigate(`/foods/${category}`);
+  }
+
   return (
     <div>
       <div className="flex items-center py-3">
@@ -8,20 +16,38 @@ export function Header() {
       </div>
       <div>
         <nav className="flex items-center gap-3.5">
-          <NavLink href="/cereais-derivados">Cereais e derivados</NavLink>
-          <NavLink href="/verduras-hortalicas-derivados">
+          <NavLink onClick={() => handleCategoryClick("Cereais e derivados")}>
+            Cereais e derivados
+          </NavLink>
+          <NavLink
+            onClick={() =>
+              handleCategoryClick("Verduras, hortaliças e derivados")
+            }
+          >
             Verduras, hortaliças e derivados
           </NavLink>
-          <NavLink href="/frutas-derivados">Frutas e derivados</NavLink>
-          <NavLink href="/pescados-frutos-do-mar">
+          <NavLink onClick={() => handleCategoryClick("Frutas e derivados")}>
+            Frutas e derivados
+          </NavLink>
+          <NavLink
+            onClick={() => handleCategoryClick("Pescados e frutos do mar")}
+          >
             Pescados e frutos do mar
           </NavLink>
-          <NavLink href="/carnes-derivados">Carnes e derivados</NavLink>
-          <NavLink href="/miscelaneas">Miscelâneas</NavLink>
-          <NavLink href="/leguminosas-derivados">
+          <NavLink onClick={() => handleCategoryClick("Carnes e derivados")}>
+            Carnes e derivados
+          </NavLink>
+          <NavLink onClick={() => handleCategoryClick("Miscelâneas")}>
+            Miscelâneas
+          </NavLink>
+          <NavLink
+            onClick={() => handleCategoryClick("Leguminosas e derivados")}
+          >
             Leguminosas e derivados
           </NavLink>
-          <NavLink href="/nozes-sementes">Nozes e sementes</NavLink>
+          <NavLink onClick={() => handleCategoryClick("Nozes e sementes")}>
+            Nozes e sementes
+          </NavLink>
         </nav>
       </div>
     </div>
